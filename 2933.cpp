@@ -61,7 +61,6 @@ void check_air()
         }
     }
     
-
     for (int i =  0 ; i < C ; i++)
     {
         if ( check[R-1][i] ==0 && arr[R-1][i] == 'x')
@@ -69,7 +68,6 @@ void check_air()
             bfs(R-1, i);
         }
     }
-        
     vector<pair<int, int>> v;
     vector<pair<int,int>> m;
     for (int i = 0 ; i<  R ; i++ ) {
@@ -84,9 +82,14 @@ void check_air()
         }
     }
 
-     
     sort(v.begin(), v.end(), compare);
-    if (v.size()==0) return ;
+  /*  for (int i = 0 ; i< v.size() ; i++)
+    {
+        cout<< v[i].first << v[i].second << "\n";
+    }*/
+    if (v.size()==0) return ; 
+
+        
     while (1)
     {
         bool flag = 1;
@@ -126,17 +129,11 @@ void check_air()
       
 
         }
-     for (int i = 0 ; i< R ; i++) {
-        for (int j = 0 ; j< C ; j++) {
-            cout<< arr[i][j];
-        }cout<<"\n";
-    }  cout<<"\n";
+    
+
+  
     }
-     for (int i = 0 ; i< R ; i++) {
-        for (int j = 0 ; j< C ; j++) {
-            cout<< arr[i][j];
-        }cout<<"\n";
-    }  
+     
 }
 
 int main(void)
@@ -180,5 +177,13 @@ int main(void)
             check_air();
         }
     }
-    return 0;
+    for (int i = 0 ; i< R ; i++)
+    {
+        for (int j = 0  ; j< C; j++) 
+        {
+            cout<< arr[i][j];
+        }
+        cout<<"\n";
+    }
+    return 0; 
 }
