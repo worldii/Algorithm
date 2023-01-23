@@ -1,7 +1,12 @@
-
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
+// 클래스 생성
 class truck {
 	int wei;
 	int time;
@@ -14,64 +19,72 @@ class truck {
 
 public class Main {
 	static int n, w, l;
-	static int timeSum = 0;
-	static ArrayList<truck> tlist = new ArrayList<>();
+	static int timeSum = 1;
 
+	// 트럭
+	static List<truck> tlist = new LinkedList<>();
+
+	// 시간 1초 흐름.
 	public static void increaseTime() {
 		timeSum++;
-		//System.out.println(timeSum);
-
 		for (int t = 0; t < tlist.size(); t++) {
 			tlist.get(t).time += 1;
 		}
-		//System.out.println();
 	}
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
-		w = sc.nextInt();
-		l = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		// 입력 받기
+		StringTokenizer st  = null;
+
+		st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
+		w = Integer.parseInt(st.nextToken());
+		l = Integer.parseInt(st.nextToken());
 		int[] arr = new int[n];
 
+		st = new StringTokenizer(br.readLine());
+
 		for (int i = 0; i < n; i++) {
-			arr[i] = sc.nextInt();
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		int weiSum = 0;
 		int i = 0;
-		
+
 		while (true) {
 			// 트럭 있는 것 확인
-			//System.out.println("Start");
 			// 트럭 삽입!!
 			if (i == n)
-			{				
+			{
+				// n 이고 리스트에 남아 있는 것이 없으면 뺀다.
 				if (tlist.size() ==0) break;
 			}
 			else if (i < n) {
-				if (weiSum + arr[i] <= l) 
+				// 삽입할게 남았다는 뜻임.
+				if (weiSum + arr[i] <= l)
 				{
+					// 들어 갈 수 있으면 더해준다.
 					weiSum += arr[i];
 					tlist.add(new truck(arr[i], 0));
 					i++;
 				}
 			}
-			increaseTime();
 
+			increaseTime();
 
 			// 트럭 제거 !
 			for (int t = 0; t < tlist.size(); t++) {
-				//System.out.println(tlist.get(t).wei + " " + tlist.get(t).time);
+			//	System.out.println(tlist.get(t).wei + " " + tlist.get(t).time);
 				if (tlist.get(t).time == w ) {
 					weiSum -= tlist.get(t).wei;
-					//System.out.println("remove" + t + tlist.get(t).wei);
+				//	System.out.println("remove" + t + tlist.get(t).wei);
 					tlist.remove(t);
 					break;
 				}
 			}
 		}
 
-		System.out.println(timeSum+1);
+		System.out.println(timeSum);
 
 	}
 
