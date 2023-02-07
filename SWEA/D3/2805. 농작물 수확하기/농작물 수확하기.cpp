@@ -1,6 +1,9 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 class Cor {
 	int x;
@@ -22,6 +25,8 @@ public class Solution {
 	static int[][] checked;
 	static int n;
 	static int mid;
+	static StringTokenizer st;
+	static BufferedReader br;
 
 	static void bfs(int x, int y) {
 		Queue<Cor> q = new LinkedList<>();
@@ -45,18 +50,18 @@ public class Solution {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		// TODO Auto-generated method stub
-		Scanner sc = new Scanner(System.in);
-		int t = sc.nextInt();
+		// Scanner sc = new Scanner(System.in);
+		br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine());
 		for (int tt = 1; tt <= t; tt++) {
-			n = sc.nextInt();
+			n = Integer.parseInt(br.readLine());
 			arr = new int[n + 1][n + 1];
 			checked = new int[n + 1][n + 1];
 
-			sc.nextLine();
 			for (int i = 0; i < n; i++) {
-				String str = sc.nextLine();
+				String str = br.readLine();
 				for (int j = 0; j < n; j++) {
 
 					arr[i][j] = str.charAt(j) - '0';
