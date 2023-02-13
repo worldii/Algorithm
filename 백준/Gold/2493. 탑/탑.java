@@ -43,7 +43,6 @@ public class Main {
 				while (!stack.isEmpty() && stack.peek().num <= arr[i]) {
 					stack.pop();
 				}
-				int idx = -1;
 				if (!stack.isEmpty()) {
 					checked[i] = stack.peek().idx;
 				}
@@ -52,9 +51,11 @@ public class Main {
 			stack.add(new Cor(i, arr[i]));
 
 		}
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < n; i++) {
-			System.out.print(checked[i] + 1 + " ");
+			sb.append(checked[i]+1 + " ");
 		}
+		System.out.println(sb);
 	}
 
 }
