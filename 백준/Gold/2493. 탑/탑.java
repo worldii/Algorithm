@@ -1,10 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
 class Cor {
@@ -27,7 +25,7 @@ public class Main {
 
 		int n = Integer.parseInt(br.readLine());
 		int[] arr = new int[n];
-		Stack<Cor> stack = new Stack<>();
+		Deque<Cor> stack = new ArrayDeque<>();
 		int[] checked = new int[n];
 
 		st = new StringTokenizer(br.readLine());
@@ -48,7 +46,7 @@ public class Main {
 				}
 			}
 
-			stack.add(new Cor(i, arr[i]));
+			stack.offerFirst(new Cor(i, arr[i]));
 
 		}
 		StringBuilder sb = new StringBuilder();
