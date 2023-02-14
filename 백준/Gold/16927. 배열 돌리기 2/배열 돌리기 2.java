@@ -1,0 +1,146 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static int n, m;
+	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static StringTokenizer st = null;
+	public static int[][] arr = null;
+	public static int[][] checked = null;
+	public static int[] dx = { 0, 1, 0, -1 };
+	public static int[] dy = { 1, 0, -1, 0 };
+	public static Queue<Integer> queue = null;
+    static StringBuilder sb = new StringBuilder();
+
+	public static void rotate(int x, int y, int row, int col) {
+		// int row = 5 , col = 4
+		queue = new LinkedList<>();
+		int curX = x;
+		int curY = y;
+		int cnt = 0;
+		// 4 (col) + 4 (row-1)  + 3(col-1) + 3  (row-2)
+		for (int i = 0; i < col - 1; i++) {
+			queue.add(arr[curX][curY]);
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+		}
+	//	System.out.println(curX + " " + curY);
+		cnt++;
+
+		for (int i = 0; i < row - 1; i++) {
+			queue.add(arr[curX][curY]);
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+
+		}
+	//	System.out.println(curX + " " + curY);
+
+		cnt++;
+
+		for (int i = 0; i < col - 1; i++) {
+
+			queue.add(arr[curX][curY]);
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+
+		}
+	//	System.out.println(curX + " " + curY);
+
+		cnt++;
+
+		for (int i = 0; i < row - 2; i++) {
+			queue.add(arr[curX][curY]);
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+		}
+	//	System.out.print(curX + " " + curY);
+		queue.add(arr[curX][curY]);
+		cnt++;
+		queue.add(queue.poll());
+	//	System.out.println();
+		//////////////////////////////////////
+		curX = x;
+		curY = y;
+		cnt = 0;
+		for (int i = 0; i < col - 1; i++) {
+			arr[curX][curY] = queue.poll();
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+		}
+		cnt++;
+		for (int i = 0; i < row - 1; i++) {
+
+			arr[curX][curY] = queue.poll();
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+
+		}
+		cnt++;
+
+		for (int i = 0; i < col - 1; i++) {
+
+			arr[curX][curY] = queue.poll();
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+		}
+		cnt++;
+
+		for (int i = 0; i < row - 2; i++) {
+			arr[curX][curY] = queue.poll();
+
+			curX = dx[cnt] + curX;
+			curY = dy[cnt] + curY;
+		}
+		arr[curX][curY] = queue.poll();
+
+		
+	}
+
+	public static void main(String[] args) throws IOException {
+		st = new StringTokenizer(br.readLine());
+
+		 n = Integer.parseInt(st.nextToken());
+		 m = Integer.parseInt(st.nextToken());
+		int r = Integer.parseInt(st.nextToken());
+		arr = new int[n][m];
+		checked = new int[n][m];
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < m; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		int curx = 0;
+		int cury = 0;
+		int curRow = n;
+		int curCol = m;
+		// 한번 돌리는 것임
+		while (curRow>0 && curCol>0) {
+			int t = r%((curRow-1)*2 +(curCol-1)*2); 
+			for (int i = 0; i< t; i++) {
+			rotate(curx, cury, curRow, curCol);
+			}
+			curx =curx+1;
+			cury = cury+1;
+			curRow-=2;
+			curCol -=2;
+		}
+		//curx = curx + 1;
+		//	cury = cury + 1;
+		//curRow -= 2;
+		//	curCol -= 2;
+		for(int i=0;i<n;i++) {
+        	for(int j=0;j<m;j++) {
+        		sb.append(arr[i][j]).append(" ");
+        	}
+        	sb.append("\n");
+        }
+        System.out.print(sb);
+	}
+
+}
