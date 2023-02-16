@@ -122,6 +122,7 @@ public class Main {
         if (one > two) flag =2;
         checked = new boolean[zeroList.size()];
 
+        if (zeroList.size() >= 8) { System.out.println("D"); return ;}
         // flag = 1부터 시작함.
         int temp = recur(0, arr, zeroList.size(), flag);
         if (temp == 1) System.out.println("W");
