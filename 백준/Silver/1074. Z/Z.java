@@ -3,63 +3,51 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+
 public class Main {
 
-    public static int[] arr = new int[10];
-    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    public static StringTokenizer st = null;
-    public static boolean[][] checked = null;
-
-    // 항상 최선의 선택을 해야함.
-
-
-    public static int[] dx = {0, 0, 1, 1};
-    public static int[] dy = {0, 1, 0, 1};
-
-    public static int maxSum = 0;
-
-    public static void recur(int row, int col, int size, int startx, int starty) {
-        if (size == 2) {
-            for (int i = 0; i < 4; i++) {
-                int newx = startx + dx[i];
-                int newy = starty + dy[i];
-                if (newx == row && newy == col) {
-                    maxSum += (i + 1);
-                    System.out.println(maxSum-1);
-                    System.exit(0);
-                }
-
-            }
-            maxSum += 4;
-            return ;
-        }
-
-        if (startx <= row && row < startx + size/2 && starty <= col && col <starty + size/2)
-            recur(row, col, size / 2, startx, starty);
-        else maxSum += size/2* size/2;
-        if (startx <= row && row < startx + size/2 && starty +size/2 <= col && col <starty + size)
-            recur(row, col, size / 2, startx, starty + size / 2);
-        else maxSum += size/2* size/2;
-        if (startx + size/2 <= row && row < startx + size && starty <= col && col <starty + size/2)
-            recur(row, col, size / 2, startx + size / 2, starty);
-        else maxSum += size/2* size/2;
-        if (startx +size/2<= row && row < startx + size && starty +size/2<= col && col <starty + size)
-            recur(row, col, size / 2, startx + size / 2, starty + size / 2);
-        else maxSum += size/2* size/2;
-
-    }
+    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    static StringBuilder output = new StringBuilder();
+    static StringTokenizer tokens;
+    static int N, R, C, size2;
+    static int[][] map;
+    static int num;
 
     public static void main(String[] args) throws IOException {
-        st = new StringTokenizer(br.readLine());
+        tokens = new StringTokenizer(input.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int r = Integer.parseInt(st.nextToken());
-        int c = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(tokens.nextToken());
+        R = Integer.parseInt(tokens.nextToken());
+        C = Integer.parseInt(tokens.nextToken());
+        size2 = (int) Math.pow(2, N);
+        num = 0;
+        make(R, C, size2);
+        System.out.println(output.toString());
 
+       // System.out.println(num);
+    }
 
-        recur(r, c, (int)Math.pow(2,n), 0, 0);
-        System.out.println(maxSum-1);
+    public static void make(int r, int c, int size) {
+     //  System.out.println(r + " " + c + " " + num+ " "+ size);
+      if( r== 0 && c==0 ) {
+          System.out.println(num);
+          return ;
+      }
 
+        int half = size / 2;
+        if (r < half && c < half) {
+            make(r, c, half);
+        } else if (r < half && c >= half) {
+            num = num + half * half;
+            make(r, c-half , half);
+        } else if (r>= half && c < half) {
+            num = num + half * half * 2;
+            make(r -half, c, half);
+        } else {
+            num = num + half * half * 3;
+            //System.out.println("num " + num);
+            make(r-half , c-half , half);
+        }
     }
 }
 
