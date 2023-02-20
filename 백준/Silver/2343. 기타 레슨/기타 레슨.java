@@ -47,13 +47,13 @@ public class Main {
         arr = new int[n];
 
         int maxNum = -1;
-        //int end = 0;
+        int end = 0;
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
             maxNum = Math.max(maxNum, arr[i]);
+            end += arr[i];
         }
 
-        int end = 1000000000;
         int start = maxNum;
 
         //   check(15);
