@@ -5,16 +5,16 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 /**
- * [키워드]
+ * [키워드] 완전 탐색
  * <p>
- * [풀이과정]
+ * [풀이과정] 친구관계를 그래프 인접 리스트에 저장. 완전 탐색한다.
  * <p>
- * [입력]
- * [출력]
+ * [입력] 친구관계가 주어진다.
+ * [출력] 주어진 친구관계 만족하면 1, 아니면 0을 출력
  *
- * @author SSAFY
+ * @author 박종하
  * @performance
- * @category #그래프, #BFS
+ * @category #그래프, #DFS # 완탐
  * @see
  */
 
