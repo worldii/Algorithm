@@ -1,150 +1,145 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-
-class Fireball {
-    int r;
-    int c;
-    int m;
-    int s;
-    int d;
-
-    @Override
-    public String toString() {
-        return "Fireball{" +
-                "r=" + r +
-                ", c=" + c +
-                ", m=" + m +
-                ", s=" + s +
-                ", d=" + d +
-                '}';
-    }
-
-    Fireball(int r, int c, int m, int s, int d) {
-        this.r = r;
-        this.c = c;
-        this.m = m;
-        this.s = s;
-        this.d = d;
-    }
-
-}
+import java.util.*;
 
 public class Main {
-
-
     public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static StringTokenizer st = null;
-
-    public static ArrayList<ArrayList<ArrayList<Fireball>>> fireBallMap = new ArrayList<>();
-
-    public static ArrayList<ArrayList<ArrayList<Fireball>>> nextFireBallMap = new ArrayList<>();
-
-    public static int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
-    public static int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
     public static int n, m, k;
 
+    static class Fireball {
+        public final int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
+        public final int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+        private int r;
+        private int c;
+        private int m;
+        private int s;
+        private int d;
+        private int cnt;
+        private boolean dirFlag;
 
-    public static void move() {
-        // fireball map 에 담음 => new fireballmap 에다가 옮겨 담음 (move)
+        Fireball(int r, int c, int m, int s, int d) {
+            this.r = r;
+            this.c = c;
+            this.m = m;
+            this.s = s;
+            this.d = d;
+            this.cnt = 1;
+            dirFlag = true;
+        }
 
-        init(nextFireBallMap);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (fireBallMap.get(i).get(j).size() > 0) {
-                    for (int t = 0; t < fireBallMap.get(i).get(j).size(); t++) {
-                        int nextX = (n+(n+fireBallMap.get(i).get(j).get(t).r + dx[fireBallMap.get(i).get(j).get(t).d] * fireBallMap.get(i).get(j).get(t).s) % n)%n ;
-                        int nextY = (n + (n+ fireBallMap.get(i).get(j).get(t).c + dy[fireBallMap.get(i).get(j).get(t).d] * fireBallMap.get(i).get(j).get(t).s) % n)%n ;
-                       // System.out.println(nextX + " "+ nextY);
-                        nextFireBallMap.get(nextX).get(nextY).add(new Fireball(nextX, nextY, fireBallMap.get(i).get(j).get(t).m, fireBallMap.get(i).get(j).get(t).s, fireBallMap.get(i).get(j).get(t).d));
+        public void increaseCnt() {
+            this.cnt++;
+        }
 
+        @Override
+        public String toString() {
+            return "Fireball{" +
+                    ", r=" + r +
+                    ", c=" + c +
+                    ", m=" + m +
+                    ", s=" + s +
+                    ", d=" + d +
+                    ", cnt=" + cnt +
+                    ", dirFlag=" + dirFlag +
+                    '}';
+        }
+
+        public int getNextR() {
+            return ((this.r + this.s * this.dx[this.d]) % n + n) % n;
+        }
+
+        public int getNextC() {
+            return ((this.c + this.s * this.dy[this.d]) % n + n) % n;
+        }
+
+
+    }
+
+    static class FireBallController {
+        private Queue<Fireball> fireballs;
+        private Fireball[][] space;
+
+        FireBallController(Queue<Fireball> fireballs) {
+            this.fireballs = fireballs;
+            this.space = new Fireball[n][n];
+        }
+
+        public void start() {
+            for (int i = 0; i < k; i++) {
+                move();
+                moveAfter();
+            }
+            calSum();
+        }
+
+        public void move() {
+            // fireball Queue 를 보고 map 에 옮겨줌.
+            while (!fireballs.isEmpty()) {
+                Fireball cur = fireballs.poll();
+                int nextR = cur.getNextR();
+                int nextC = cur.getNextC();
+                if (space[nextR][nextC] == null) {
+                    space[nextR][nextC] = new Fireball(nextR, nextC, cur.m, cur.s, cur.d);
+                } else {
+                    space[nextR][nextC].increaseCnt();
+                    space[nextR][nextC].m += cur.m;
+                    space[nextR][nextC].s += cur.s;
+                    // 방향은 처음에는 true 만약 안맞으면 false 로 바꿔줌
+                    if (space[nextR][nextC].dirFlag) {
+                        if (space[nextR][nextC].d % 2 != cur.d % 2) space[nextR][nextC].dirFlag = false;
                     }
                 }
+
+
             }
+
         }
 
-    }
 
-    public static void init(ArrayList<ArrayList<ArrayList<Fireball>>> arr) {
-        arr.clear();
-        for (int i = 0; i <= n; i++) {
-            arr.add(new ArrayList<ArrayList<Fireball>>());
-        }
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n; j++) {
-                arr.get(i).add(new ArrayList<Fireball>());
-            }
-        }
-    }
-
-    public static void moveAfter() {
-        // new fireball map 을 보고 합쳐지는 것을 firemap 에 담음
-
-       // printArr(nextFireBallMap);
-        init(fireBallMap);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (nextFireBallMap.get(i).get(j).size() == 0) continue;
-                if (nextFireBallMap.get(i).get(j).size() >= 2) {
-                    ArrayList<Fireball> temp = nextFireBallMap.get(i).get(j);
-                    int weiTotal = 0;
-                    int speTotal = 0;
-                    int dir = (nextFireBallMap.get(i).get(j).get(0).d) % 2;
-                    boolean dirFlag = true;
-                    // dir 이 0 이면 짝수
-                    for (int t = 0; t < temp.size(); t++) {
-
-                        weiTotal += temp.get(t).m;
-                        speTotal += temp.get(t).s;
-                        if (dir != temp.get(t).d % 2) dirFlag = false;
-
-                    }
-                    weiTotal /= 5;
-                    speTotal /= nextFireBallMap.get(i).get(j).size();
-                    if (weiTotal == 0) continue;
-                    if (dirFlag) {
-                        for (int ii = 0; ii <= 6; ii += 2) {
-
-                            fireBallMap.get(i).get(j).add(new Fireball(i, j, weiTotal, speTotal, ii));
-
+        public void moveAfter() {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (space[i][j] == null) continue;
+                    else if (space[i][j].cnt == 1) {
+                        if (space[i][j].m > 0) {
+                            // 그냥 fireball 리스트에 추가하면 됨 -> divide 가 안된다.
+                            fireballs.add(space[i][j]);
+                            space[i][j] = null;
                         }
                     } else {
-                        for (int ii = 1; ii <= 7; ii += 2) {
-                            fireBallMap.get(i).get(j).add(new Fireball(i, j, weiTotal, speTotal, ii));
+                        // divide 되는 경우가 있다.
+                        int newWei = space[i][j].m / 5;
+                        int newSpe = space[i][j].s / space[i][j].cnt;
+                        if (newWei > 0) {
+                            if (space[i][j].dirFlag) {
+                                for (int ii = 0; ii <= 6; ii += 2) {
+                                    fireballs.add(new Fireball(i, j, newWei, newSpe, ii));
+                                }
+                            } else {
+                                for (int ii = 1; ii <= 7; ii += 2) {
+                                    fireballs.add(new Fireball(i, j, newWei, newSpe, ii));
+                                }
+                            }
                         }
+                        space[i][j] = null;
                     }
-
-                } else {
-                    if (nextFireBallMap.get(i).get(j).get(0).m <= 0) continue;
-                    fireBallMap.get(i).get(j).add(nextFireBallMap.get(i).get(j).get(0));
                 }
             }
         }
-       // printArr(fireBallMap);
 
-    }
-
-    public static void printArr(ArrayList<ArrayList<ArrayList<Fireball>>> arr) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (arr.get(i).get(j).size() > 0)  {
-                    for (int t= 0 ;t< arr.get(i).get(j).size() ;t++) {
-                        System.out.print(arr.get(i).get(j).get(t));
-                    }
-
-                }
-                else {
-                    System.out.print("EMPTY");
-                }
-
+        public void calSum() {
+            long cnt = 0;
+            while (!fireballs.isEmpty()) {
+                cnt += fireballs.peek().m;
+                fireballs.poll();
             }
-            System.out.println();
+            System.out.println(cnt);
         }
+
     }
+
 
     public static void main(String[] args) throws NumberFormatException, IOException {
 
@@ -154,8 +149,7 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
 
-        init(fireBallMap);
-        init(nextFireBallMap);
+        Queue<Fireball> fireballs = new LinkedList<>();
 
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
@@ -165,23 +159,10 @@ public class Main {
             m = Integer.parseInt(st.nextToken());
             s = Integer.parseInt(st.nextToken());
             d = Integer.parseInt(st.nextToken());
-            fireBallMap.get(r).get(c).add(new Fireball(r, c, m, s, d));
+            fireballs.add(new Fireball(r, c, m, s, d));
         }
-        for (int i = 0; i < k; i++) {
-            move();
-            moveAfter();
-        }
-        long cnt = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (fireBallMap.get(i).get(j).size() > 0) {
-                    for (int t = 0; t < fireBallMap.get(i).get(j).size(); t++) {
-                        cnt += fireBallMap.get(i).get(j).get(t).m;
-                    }
-                }
-            }
-        }
-        System.out.println(cnt);
+        FireBallController fireBallController = new FireBallController(fireballs);
+        fireBallController.start();
     }
 
 }
