@@ -7,6 +7,31 @@ public class Main {
     public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     public static StringTokenizer st = null;
 
+    static class Edge implements Comparable<Edge> {
+        int start;
+        int end;
+        int cost;
+
+        @Override
+        public String toString() {
+            return "Edge{" +
+                    "start=" + start +
+                    ", end=" + end +
+                    ", cost=" + cost +
+                    '}';
+        }
+
+        Edge(int start, int end, int cost) {
+            this.start = start;
+            this.end = end;
+            this.cost = cost;
+        }
+
+        public int compareTo(Edge vertex) {
+            return Integer.compare(this.cost, vertex.cost);
+        }
+    }
+
     static class Vertex implements Comparable<Vertex> {
         int node;
         int cost;
@@ -55,68 +80,97 @@ public class Main {
     public static int V, E;
     public static ArrayList<Vertex>[] graph;
 
-    public static int total = 0;
+    public static long total = 0;
+
     public static void prim(int start) {
 
         // start check 한다.
 
-        boolean [] ch = new boolean[V+1];
+        boolean[] ch = new boolean[V + 1];
         // pq
         // start 와 연결되어 있는것다 넣음
 
-        PriorityQueue<Vertex > q = new PriorityQueue<>();
+        PriorityQueue<Vertex> q = new PriorityQueue<>();
         q.add(new Vertex(start, 0));
 
 
-        int vCount=0;
+        int vCount = 0;
 
         while (!q.isEmpty()) {
             Vertex temp = q.peek();
             q.poll();
 
-            if (ch[temp.node]) continue;;
+            if (ch[temp.node]) continue;
+            ;
             ch[temp.node] = true;
 
             total += temp.cost;
-            if (++vCount == V)  break;
-            for (int i = 0 ; i< graph[temp.node].size() ; i++) {
+            if (++vCount == V) break;
+            for (int i = 0; i < graph[temp.node].size(); i++) {
                 // 연결 되어 있는 간선 노드 다 넣음.
                 q.add(graph[temp.node].get(i));
             }
 
         }
     }
+
+    public static int[] parent;
+
+    public static int getParent(int a) {
+        if (parent[a] == a) return a;
+        parent[a] = getParent(parent[a]);
+        return parent[a];
+    }
+
+    public static boolean IsSameParent(int a, int b) {
+        if (getParent(a) == getParent(b)) {
+            return true;
+        } else return false;
+    }
+
+    public static void union(int a, int b) {
+        int aParent = getParent(a);
+        int bParent = getParent(b);
+        if (aParent != bParent) {
+            parent[bParent] = aParent;
+        }
+
+    }
+
     public static void main(String[] args) throws NumberFormatException, IOException {
 
 
         st = new StringTokenizer(br.readLine());
         V = Integer.parseInt(st.nextToken());
         E = Integer.parseInt(st.nextToken());
-        graph = new ArrayList[V + 1];
 
-        for (int i = 0; i <= V; i++) {
-            graph[i] = new ArrayList<>();
-        }
 
-        for (int i = 0; i < E; i++)
-        {
+        PriorityQueue<Edge> edges = new PriorityQueue<>();
+        for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
             int u, v, e;
             u = Integer.parseInt(st.nextToken());
             v = Integer.parseInt(st.nextToken());
             e = Integer.parseInt(st.nextToken());
-            graph[u].add(new Vertex(v, e));
-            graph[v].add(new Vertex(u, e));
+            edges.add(new Edge(u, v, e));
         }
-        prim(1) ;
 
+        parent = new int[V + 1];
+        for (int i = 1; i <= V; i++) {
+            parent[i] = i;
+        }
+        while (!edges.isEmpty()) {
+            Edge temp = edges.peek();
+            edges.poll();
+           // System.out.println(temp);
+
+            if (!IsSameParent(temp.end, temp.start)) {
+                union(temp.end, temp.start);
+                total += temp.cost;
+            }
+        }
         System.out.println(total);
-//        // dikstra
-//        dikstra(start);
-//        for (int i = 1; i <= V; i++) {
-//            if (dis[i] == Integer.MAX_VALUE) System.out.println("INF");
-//            else System.out.println(dis[i]);
-//        }
+
     }
 
 }
