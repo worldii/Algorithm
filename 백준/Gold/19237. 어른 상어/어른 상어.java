@@ -33,20 +33,16 @@ public class Main {
 		}
 
 		public void start() {
-			while (true) {
+			while (!checkTime()) {
 				move();
 				updateSmell();
-				if (cnt++== 1000) {
+				if (cnt++ == 1000)
 					break;
-				}
-				if (checkTime()) {
-					break;
-				}
 			}
+
 			if (cnt > 1000)
-				System.out.println(-1);
-			else
-				System.out.println(cnt);
+				cnt = -1;
+			System.out.println(cnt);
 		}
 
 		public boolean checkTime() {
@@ -94,13 +90,7 @@ public class Main {
 				SharkLoc temp = q.poll();
 				int loc = 0;
 				int size = checkLocNum(temp);
-				if (size == 0) {
-					// 인접한 칸이 없다;
-					// 자신 방향으로
-					loc = getNoLoc(temp);
-				} else {
-					loc = getLoc(temp);
-				}
+				loc = getLoc(temp, size);
 				int nx = temp.x + dx[loc];
 				int ny = temp.y + dy[loc];
 				tempList.add(new SharkLoc(nx, ny, new Shark(k, temp.shark.num, loc, temp.shark.smell)));
@@ -108,40 +98,17 @@ public class Main {
 
 			while (!tempList.isEmpty()) {
 				SharkLoc temp = tempList.poll();
-				int nx = temp.x;
-				int ny = temp.y;
-				if (map[nx][ny] != null && map[nx][ny].num > 0) {
-					if (map[nx][ny].num > temp.shark.num) {
-						map[nx][ny] = temp.shark;
+				if (map[temp.x][temp.y] != null && map[temp.x][temp.y].num > 0) {
+					if (map[temp.x][temp.y].num > temp.shark.num) {
+						map[temp.x][temp.y] = temp.shark;
 					}
-				} else {
+				} else
 					// 상어가 없다
-					map[nx][ny] = temp.shark;
-				}
+					map[temp.x][temp.y] = temp.shark;
 			}
 		}
 
-		// 인접한 칸 (null 이 아닐 때만 호출)
-		public int getNoLoc(SharkLoc temp) {
-			int curX = temp.x;
-			int curY = temp.y;
-			int curDir = temp.shark.dir;
-
-			int[] dir = sharkInfos.get(temp.shark.num)[curDir];
-
-			for (int i = 0; i < 4; i++) {
-				int nX = curX + dx[dir[i]];
-				int nY = curY + dy[dir[i]];
-				if (0 <= nX && nX < n && 0 <= nY && nY < n) {
-					if (temp.shark.num == map[nX][nY].smell) {
-						return dir[i];
-					}
-				}
-			}
-			return 0;
-		}
-
-		public int getLoc(SharkLoc temp) {
+		public int getLoc(SharkLoc temp, int size) {
 			int curX = temp.x;
 			int curY = temp.y;
 			int curDir = temp.shark.dir;
@@ -149,9 +116,16 @@ public class Main {
 			for (int i = 0; i < 4; i++) {
 				int nx = curX + dx[dir[i]];
 				int ny = curY + dy[dir[i]];
+
 				if (0 <= nx && nx < n && 0 <= ny && ny < n) {
-					if (map[nx][ny] == null) {
-						return dir[i];
+					if (size == 0) {
+						if (temp.shark.num == map[nx][ny].smell) {
+							return dir[i];
+						}
+					} else {
+						if (map[nx][ny] == null) {
+							return dir[i];
+						}
 					}
 				}
 			}
@@ -160,13 +134,9 @@ public class Main {
 
 		public int checkLocNum(SharkLoc temp) {
 			int size = 0;
-			// check Loc 인접 칸
-			// 인접 칸 중 아무 냄새가 없는 곳이 있다.
+			// check Loc 인접 칸// 인접 칸 중 아무 냄새가 없는 곳이 있다.
 			// 아무 냄새 없는 곳 많으면 우선 순위
-
-			// 인접 칸이 없다.
-			// num 은 상어의 숫자
-			// dir 은 상어의 방향
+			// 인접 칸이 없다.// num 은 상어의 숫자// dir 은 상어의 방향
 			int curX = temp.x;
 			int curY = temp.y;
 			int curDir = temp.shark.dir;
@@ -181,7 +151,6 @@ public class Main {
 					}
 				}
 			}
-
 			return size;
 		}
 
@@ -192,31 +161,20 @@ public class Main {
 		int timeLimit;
 		int num;
 		int smell;
-
-		@Override
-		public String toString() {
-			return "Shark{" +
-				"dir=" + dir +
-				", timeLimit=" + timeLimit +
-				", num=" + num + " smell" + smell +
-				'}';
-		}
-
+		
 		Shark(int timeLimit, int num) {
 			this.num = num;
 			this.timeLimit = timeLimit;
 		}
 
 		Shark(int timeLimit, int num, int dir, int smell) {
-			this.timeLimit = timeLimit;
-			this.num = num;
+			this(timeLimit, num);
 			this.dir = dir;
 			this.smell = smell;
 		}
 	}
 
 	public static int n, m, k;
-
 	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static StringTokenizer st = null;
 
@@ -271,14 +229,6 @@ public class Main {
 			}
 			sharkInfos.add(info);
 		}
-		// for (int i = 1; i <= m; i++) {
-		// 	for (int j = 1 ;j<= 4; j++) {
-		// 		for (int t = 0 ;t < 4 ; t++ ){
-		// 			System.out.print(sharkInfos.get(i)[j][t]+ " ");
-		// 		}
-		// 		System.out.println();
-		// 	}
-		// }
 
 		SharkController sharkController = new SharkController(arr, sharkInfos);
 		sharkController.start();
