@@ -44,15 +44,15 @@ public class Main {
 
 		while (!pq.isEmpty()) {
 			Cor temp = pq.poll();
-			if (check[temp.vertex]) continue;
-			check[temp.vertex] = true;
+
+			if (dist[temp.vertex] < temp.cost) continue;
 			for (int i = 0 ; i< graph.get(temp.vertex).size() ; i++) {
-				if (check[graph.get(temp.vertex).get(i).vertex]) continue;
 				if (dist[graph.get(temp.vertex).get(i).vertex] >  dist[temp.vertex] + graph.get(temp.vertex).get(i).cost )
 				{
 					dist[graph.get(temp.vertex).get(i).vertex] = dist[temp.vertex] + graph.get(temp.vertex).get(i).cost;
+					pq.add(new Cor(graph.get(temp.vertex).get(i).vertex, dist[graph.get(temp.vertex).get(i).vertex]));
+
 				}
-				pq.add(new Cor(graph.get(temp.vertex).get(i).vertex, dist[graph.get(temp.vertex).get(i).vertex]));
 			}
 		}
 
