@@ -16,11 +16,11 @@
 
 <p>오늘은 집 수리를 위해서 파이프 하나를 옮기려고 한다. 파이프는 아래와 같은 형태이고, 2개의 연속된 칸을 차지하는 크기이다.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="width: 138px; height: 70px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/3ceac594-87df-487d-9152-c532f7136e1e/-/preview/" style="width: 138px; height: 70px;"></p>
 
 <p>파이프는 회전시킬 수 있으며, 아래와 같이 3가지 방향이 가능하다.</p>
 
-<p style="text-align: center;"><img alt="" src="" style="width: 427px; height: 136px;"></p>
+<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/b29efafa-dbae-4522-809c-76d5c184a231/-/preview/" style="width: 427px; height: 136px;"></p>
 
 <p>파이프는 매우 무겁기 때문에, 유현이는 파이프를 밀어서 이동시키려고 한다. 벽에는 새로운 벽지를 발랐기 때문에, 파이프가 벽을 긁으면 안 된다. 즉, 파이프는 항상 빈 칸만 차지해야 한다.</p>
 
