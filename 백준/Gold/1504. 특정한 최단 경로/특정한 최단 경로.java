@@ -5,96 +5,87 @@ import java.util.*;
 
 public class Main {
 
-	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	public static StringTokenizer st = null;
+    public static int n, e;
+    public static StringTokenizer st = null;
+    public static int[][] arr;
 
-	static class Cor {
-		int vertex;
-		long cost ;
-		Cor (int vertex, long cost) {
-			this.vertex = vertex;
-			this.cost= cost;
-		}
-	}
+    static class Cor {
+        int dest;
+        int cost;
+        public Cor(int dest, int cost) {
+            this.dest = dest;
+            this.cost = cost;
+        }
+    }
+    public static BufferedReader br =
+            new BufferedReader(new InputStreamReader(System.in));
+    public static ArrayList<ArrayList<Cor>> graph = new ArrayList<>();
+    public static int dikstra (int start, int end) {
+        int[] dist = new int[n+1];
+        boolean [] check = new boolean[n+1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[start] = 0;
+        PriorityQueue<Cor> pq = new PriorityQueue<>(new Comparator<Cor>() {
+            @Override
+            public int compare(Cor o1, Cor o2) {
+                return Integer.compare(o1.cost, o2.cost);
+            };
+        });
+        pq.add(new Cor(start,0));
+        while (!pq.isEmpty()) {
+            Cor cur = pq.poll();
+            if (cur.dest == end) return dist[end];
+            if (check[cur.dest]) continue;
+            check[cur.dest] = true;
+            for (int i = 0 ; i< graph.get(cur.dest).size() ; i++) {
+                int next = graph.get(cur.dest).get(i).dest;
+                if (dist[next]  > dist[cur.dest] + graph.get(cur.dest).get(i).cost) {
+                    dist[next] = dist[cur.dest] + graph.get(cur.dest).get(i).cost;
+                    pq.add(new Cor(next, dist[next]));
+                }
+            }
+        }
+        return dist[end];
+    }
+    public static void main(String[] args) throws IOException {
 
-	public static  int INF = 100000001;
+        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
+        for (int i = 0  ;i<= n ;i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int i = 0 ; i< e ; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            graph.get(a).add(new Cor(b,c));
+            graph.get(b).add(new Cor(a,c));
+        }
+        st = new StringTokenizer(br.readLine());
+        int v1 = Integer.parseInt(st.nextToken());
+        int v2 = Integer.parseInt(st.nextToken());
+        // 다익스트라 1 -> v1 -> v2 -> n
+        int dist1 = dikstra(1,v1);
+        int dist2 = dikstra(v1,v2);
+        int dist3 = dikstra(v2,n);
+        int maxNum = Integer.MAX_VALUE;
+        if (!(dist1 == Integer.MAX_VALUE || dist2 == Integer.MAX_VALUE || dist3 == Integer.MAX_VALUE)) {
+            maxNum = Math.min(maxNum, dist1 + dist2 + dist3);
+        }
 
+        //System.out.println(dist1+ " " + dist2 + " " + dist3);
+        // 다익스트라 1 -> v2 -> v1 -> n
+        int dist4 = dikstra(1,v2);
+        int dist5 = dikstra(v2,v1);
+        int dist6 = dikstra(v1,n);
+        //System.out.println(dist4+ " " + dist5 + " " + dist6);
+        if (!(dist4 == Integer.MAX_VALUE || dist5 == Integer.MAX_VALUE || dist6 == Integer.MAX_VALUE)) {
+            maxNum = Math.min(maxNum, dist4 + dist5 + dist6);
+        }
+        if (maxNum == Integer.MAX_VALUE) System.out.println(-1);
+        else System.out.println(maxNum);
 
-	public static int v,e;
-	public static long dikstra(int start , int end ) {
-
-		if (start == end ) return 0;
-		long [] dist = new long [v+1];
-		boolean [] check = new boolean [v+1];
-
-		Arrays.fill(dist, INF);
-
-		dist[start] = 0;
-
-		PriorityQueue<Cor> pq = new PriorityQueue<>(new Comparator<Cor>() {
-			@Override
-			public int compare(Cor o1, Cor o2) {
-				return Long.compare(o1.cost, o2.cost);
-			}
-		});
-
-		pq.add(new Cor(start, 0));
-
-		int eCount = 0;
-
-		while (!pq.isEmpty()) {
-			Cor temp = pq.poll();
-
-			if (dist[temp.vertex] < temp.cost) continue;
-			for (int i = 0 ; i< graph.get(temp.vertex).size() ; i++) {
-				if (dist[graph.get(temp.vertex).get(i).vertex] >  dist[temp.vertex] + graph.get(temp.vertex).get(i).cost )
-				{
-					dist[graph.get(temp.vertex).get(i).vertex] = dist[temp.vertex] + graph.get(temp.vertex).get(i).cost;
-					pq.add(new Cor(graph.get(temp.vertex).get(i).vertex, dist[graph.get(temp.vertex).get(i).vertex]));
-
-				}
-			}
-		}
-
-		return dist[end];
-	}
-	public static ArrayList<ArrayList<Cor>> graph = new ArrayList<>();
-
-	public static void main(String[] args) throws IOException {
-
-		st = new StringTokenizer(br.readLine());
-
-		 v = Integer.parseInt(st.nextToken());
-		 e= Integer.parseInt(st.nextToken());
-
-		for (int i = 0 ; i<= v ; i++) {
-			graph.add(new ArrayList<>());
-		}
-
-		for (int i= 0 ; i< e; i++) {
-			int a,b,c;
-			st= new StringTokenizer(br.readLine());
-			a= Integer.parseInt(st.nextToken());
-			b= Integer.parseInt(st.nextToken());
-			c= Integer.parseInt(st.nextToken());
-			graph.get(a).add(new Cor(b,c));
-			graph.get(b).add(new Cor(a,c));
-		}
-
-		st = new StringTokenizer(br.readLine());
-		int start = Integer.parseInt(st.nextToken());
-		int end = Integer.parseInt(st.nextToken());
-
-
-		long sum2 = (dikstra(1, start)+ dikstra(end,v)+ dikstra(start, end));
-		long sum3 = (dikstra(1, end)+ dikstra(start,v)+dikstra(end, start));
-
-		if (sum2 >=INF && sum3 >=INF) System.out.println(-1);
-		else if (sum2>=INF) System.out.println(sum3);
-		else {
-			System.out.println(Math.min(sum2, sum3));
-		}
-
-
-	}
+    }
 }
