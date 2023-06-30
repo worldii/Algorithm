@@ -13,25 +13,6 @@ public class Main {
 
     public static int[] a;
     public static int[] c;
-    static class Node {
-        int memo;
-        int cost;
-        Node(int memo, int cost) {
-            this.memo = memo;
-            this.cost = cost;
-        }
-    }
-
-    public static long minCost =Integer.MAX_VALUE;
-    public static void recur (int cnt, int end, long wei, long cost) {
-        if (wei >= m)  {minCost = Math.min(minCost, cost);
-        return;}
-        if (cnt >= n) return;
-        // 선택 한다.
-        recur (cnt+1, end, wei+ a[cnt], c[cnt] + cost);
-
-        recur(cnt+1, end, wei, cost);
-    }
     public static void main(String[] args) throws IOException {
         st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
@@ -47,21 +28,21 @@ public class Main {
             c[i] = Integer.parseInt(st.nextToken());
         }
 
-        // i까지 했을 때 현재 비용이 j
-        long [][] dp = new long[n+1][10001];
-        for (int i = 1 ; i<= n ; i++) {
-            // dp[i][j] = dp[i-1][j-c[i]] + m[i];
-            // 최대값
-            for (int j = 0 ; j<= 10000 ; j++) {
-                dp[i][j] = dp[i-1][j];
-                if (j>= c[i]) dp[i][j] = Math.max(dp[i-1][j-c[i]] + a[i], dp[i][j]);
+        long [] dp = new long[10001]; // 비용이 i 일 때 최대 메모리 수
+        // N번을 돌림 (모든 수 고려)
+        for (int  i = 1; i<= n ; i++) {
+            //c[i] <= 비용이 (j) <= 10000 는 되어야 함.
+            for (int j  = 10000 ; j>=0 ; j--) {
+                if (j>= c[i]) dp[j] = Math.max(dp[j],  dp[j-c[i]] +a[i]);
             }
         }
-        for (int j = 0 ; j<= 10000 ; j++) {
-            if (dp[n][j] >= m) {
-                System.out.println(j);
+        for (int i = 0 ; i<= 10000 ; i++) {
+            if (dp[i] >= m )
+            {
+                System.out.println(i);
                 break;
             }
         }
+
     }
 }
