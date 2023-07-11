@@ -13,7 +13,6 @@ public class Main {
     public static StringTokenizer st = null;
 
     public static void main(String[] args) throws IOException {
-        //System.out.println("Hello World!");
         st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
@@ -21,22 +20,11 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         int knowPerson = Integer.parseInt(st.nextToken());
-        boolean[] knowPersons = new boolean[n + 1];
+
+        ArrayList<Integer> knows = new ArrayList<>();
         for (int i = 0; i < knowPerson; i++) {
             int personNum = Integer.parseInt(st.nextToken());
-            knowPersons[personNum] = true;
-        }
-
-        ArrayList<ArrayList<Integer>> party = new ArrayList<>();
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
-            ArrayList<Integer> arr = new ArrayList<>();
-            for (int j = 0; j < t; j++) {
-                int num = Integer.parseInt(st.nextToken());
-                arr.add(num);
-            }
-            party.add(arr);
+            knows.add(personNum);
         }
 
         parent = new int[n + 1];
@@ -44,28 +32,35 @@ public class Main {
             parent[i] = i;
         }
 
+        int[] partyArr = new int[m + 1];
         for (int i = 0; i < m; i++) {
-            ArrayList<Integer> temp = party.get(i);
-            for (int j = 0; j < temp.size(); j++) {
-                for (int jj = 0; jj < temp.size(); jj++) {
-                    union(temp.get(j), temp.get(jj));
+            st = new StringTokenizer(br.readLine());
+            int t = Integer.parseInt(st.nextToken());
+            int num = 0;
+            for (int j = 0; j < t; j++) {
+                if (j == 0) num = getParent(Integer.parseInt(st.nextToken()));
+                else {
+                    union(num, Integer.parseInt(st.nextToken()));
                 }
             }
+            partyArr[i] = num;
         }
 
-        for (int i = 0; i <= n; i++) {
-            parent[i] = getParent(i);
-            if (knowPersons[i]) knowPersons[parent[i]] = true;
-            //System.out.print(parent[i]);
-        }
+      
+
+
         int cnt = 0;
+
         for (int i = 0; i < m; i++) {
             boolean flag = false;
-            ArrayList<Integer> temp = party.get(i);
-            for (int j = 0; j < temp.size(); j++) {
-                if (knowPersons[parent[temp.get(j)]]) flag = true;
+            for (int j = 0; j < knows.size(); j++) {
+                if (getParent(partyArr[i]) == getParent(knows.get(j))) {
+                    flag = true;
+                }
             }
-            if (!flag) cnt++;
+            if (!flag) {
+                cnt++;
+            }
         }
         System.out.println(cnt);
     }
