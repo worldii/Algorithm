@@ -54,13 +54,14 @@ public class Main {
         }
 
         postOrder(root);
+        System.out.println(sb.toString());
     }
-
+    public static StringBuilder sb= new StringBuilder();
     private static void postOrder(TreeNode i) {
         if (i == null) return;
         postOrder(i.left);
         postOrder(i.right);
-        System.out.println(i.num);
+        sb.append(i.num).append("\n");
     }
 
 
