@@ -27,6 +27,7 @@ public class Main {
             this.y = y;
         }
     }
+    public static int zCount;
     public static void main(String[] args) throws IOException {
         /*
          *
@@ -45,10 +46,12 @@ public class Main {
                 if (map[i][j] == 2) {
                     cors.add(new Cor(i, j));
                 }
-                if (map[i][j] == 1) map[i][j] = -1;
 
+                if (map[i][j] == 1) map[i][j] = -1;
+                if (map[i][j] == 0) zCount++;
             }
         }
+
         int[] arr = new int[m];
         recur(0, m, arr, 0);
         if (maxNum== Integer.MAX_VALUE) maxNum=-1;
@@ -58,25 +61,17 @@ public class Main {
     public static int[] dx = {-1, 1, 0, 0};
     public static int[] dy = {0, 0, -1, 1};
 
-    public static int[][] copy(int[][] arr) {
-        int[][] arr2 = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                arr2[i][j] = arr[i][j];
-            }
-        }
-        return arr2;
-    }
-
     public static int bfs(int[] arr) {
         Queue<int[]> curQ = new LinkedList<>();
         boolean[][] check = new boolean[n][n];
+
         int[][] arr2 =  new int [n][n];
         for (int i = 0 ; i< arr2.length ; i++) {
             for (int j = 0 ; j< arr2.length ; j++) {
                 arr2[i][j] = Integer.MAX_VALUE;
             }
         }
+        int tempZ= zCount;
         for (int i = 0; i < arr.length; i++) {
             int idx = arr[i];
             int x = cors.get(idx).x;
@@ -88,6 +83,10 @@ public class Main {
 
         while (!curQ.isEmpty()) {
             int[] temp = curQ.poll();
+            if (map[temp[0]][temp[1]] == 0) tempZ--;
+
+            if (tempZ == 0) return temp[2];
+
             for (int j = 0; j < 4; j++) {
                 int nextX = temp[0] + dx[j];
                 int nextY = temp[1] + dy[j];
@@ -100,30 +99,12 @@ public class Main {
                 if (map[nextX][nextY] == -1) {
                     continue;
                 }
-
                 curQ.add(new int[]{nextX, nextY, temp[2] + 1});
                 check[nextX][nextY] = true;
                 arr2[nextX][nextY] = temp[2] + 1;
             }
         }
-        int maxNum =0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (map[i][j] == -1|| map[i][j] == 2) continue;
-                maxNum = Math.max(maxNum, arr2[i][j]);
-            }
-        }
-        return maxNum;
-    }
-
-    private static void printArr(int[][] arr2) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.print(arr2[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        return Integer.MAX_VALUE;
     }
 
     public static int maxNum = Integer.MAX_VALUE;
