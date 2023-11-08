@@ -60,6 +60,7 @@ class Solution {
         
         int dist = Math.abs(x-r) + Math.abs(y-c);
         
+        if (dist > k || Math.abs(dist - k) %2!=0)  return "impossible";
         return bfs(x,y,r,c,n,m,k);
     }
 }
