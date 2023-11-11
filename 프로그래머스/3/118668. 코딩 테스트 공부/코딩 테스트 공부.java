@@ -1,9 +1,6 @@
 import java.util.*;
 class Solution {
-    public int maxCop;
-    public int maxAl;
-    
-    class Node{
+    static class Node{
         int curAl;
         int curCop;
         int cnt;
@@ -13,14 +10,12 @@ class Solution {
             this.cnt = cnt;
         }
     }
-    
     public int[][] problems;
-    
     public int bfs(int endAl, int endCop, int curAl, int curCop) {
         PriorityQueue<Node> pq = new PriorityQueue<Node>((a,b)-> a.cnt-b.cnt);
+        int[][] check = new int[1001][1001];
         pq.add(new Node(curAl, curCop, 0));
         
-        int[][] check = new int[1001][1001];
         for (int i = 0 ; i < 1001; i++) {
             for (int j = 0 ; j< 1001; j++) {
                 check[i][j] = Integer.MAX_VALUE;
@@ -32,9 +27,8 @@ class Solution {
             Node temp = pq.poll();
             if (temp.curCop >= endCop && temp.curAl >=endAl) return temp.cnt;
             if (check[temp.curAl][temp.curCop] < temp.cnt) continue;
-            
             // 코딩 늘리기 
-            if (check[temp.curAl][temp.curCop+1] > temp.cnt+1) {
+            if (temp.curCop <150 && check[temp.curAl][temp.curCop+1] > temp.cnt+1) {
                 check[temp.curAl][temp.curCop+1]= temp.cnt+1;
                 pq.add(new Node(temp.curAl, temp.curCop+1, temp.cnt+1));
             }
@@ -57,16 +51,15 @@ class Solution {
         }
         return -1;
     }
-    
+    public int maxCop;
+    public int maxAl;
     public int solution(int alp, int cop, int[][] problems) {
-        init(problems);
-        return bfs(maxAl, maxCop, alp, cop);
-    }
-    private void init(int[][] problems){
         this.problems = problems;
         for (int i = 0 ;i< problems.length ; i++) {
             maxAl= Math.max(maxAl, problems[i][0]);
             maxCop = Math.max(maxCop, problems[i][1]);
         }
+        int answer = bfs(maxAl, maxCop, alp, cop);
+        return answer;
     }
 }
