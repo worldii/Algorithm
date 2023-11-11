@@ -1,58 +1,58 @@
 import java.util.*;
 class Solution {
-    // queue1 
-    // queue2 
-    // 상태를 갖고 있는 노드
-    // 각 큐 원소 합을 같게 만들어야 함. 만들수없다면 -1
-    // long 타입의 고려가 필요하다. 
-
-    public long getCount(int [] queue) {
+    public class QueueData {
+        Queue<Integer> queue;
+        long totalCount; 
+        
+        QueueData(final int[] queueArr){
+            queue = new LinkedList<>();
+            for (int i = 0 ; i< queueArr.length ; i++) {
+            queue.add(queueArr[i]);
+            }
+            totalCount = getCount(queueArr);
+        }
+        
+        void add(int num) {
+            totalCount += num;
+            queue.add(num);
+        }
+        
+        int poll(){
+            int num =  queue.poll();
+            totalCount -= num;
+            return num;
+        }
+        public boolean isEmpty(){
+            return queue.isEmpty();
+        }
+    }
+    public int solution(int[] queue1, int[] queue2) {
+        QueueData q1 = new QueueData(queue1);
+        QueueData q2 = new QueueData(queue2);
+        
+        int count =0;        
+        while (q1.totalCount != q2.totalCount) {
+            if (q1.isEmpty() || q2.isEmpty()) return -1;
+            if (count > 2* (queue1.length + queue2.length)) return -1;
+        
+            if (q1.totalCount  < q2.totalCount) {
+                int num = q2.poll();
+                q1.add(num);
+            }
+            else {
+                int num = q1.poll();
+                q2.add(num);
+            }
+            count++;
+        }
+        return count ;
+    }
+    
+    private long getCount(final int [] queue) {
         long count = 0;
         for (int i = 0 ; i< queue.length ; i++) {
             count += queue[i];
         }
         return count;
-    }
-   
-    public int solution(int[] queue1, int[] queue2) {
-        long q1Count = getCount(queue1);
-        long q2Count = getCount(queue2);
-        long total = (q1Count + q2Count ) ;
-        
-        Queue<Integer> q1 = new LinkedList<>();
-        Queue<Integer> q2 = new LinkedList<>();
-        
-        for (int i = 0 ; i< queue1.length ; i++) {
-            q1.add(queue1[i]);
-        }
-        
-        for (int i = 0 ; i< queue2.length ; i++) {
-            q2.add(queue2[i]);
-        }
-        
-        int count =0;
-        HashSet<String> set = new HashSet<>();
-        
-        while (q1Count != q2Count) {
-            if (q1.isEmpty() || q2.isEmpty()) return -1;
-            if (set.contains(q1Count+"" + q1.peek()+ ""+ q2Count+ ""+q2.peek())) return -1;
-            set.add(q1Count+ ""+ q1.peek()+""  + q2Count+ q2.peek());
-            if (q1Count < q2Count) {
-                int num = q2.poll();
-                q1Count += num;
-                q2Count -= num;
-                q1.add(num);
-            }
-            else {
-                int num = q1.poll();
-                q2Count += num;
-                q1Count -= num;
-                q2.add(num);
-            }
-            count++;
-        }
-        
-        return count ;
-
     }
 }
