@@ -14,17 +14,20 @@ class Solution {
         - 약관종류 : terms에 나타난 것만 
 
     */
-    public LocalDate getLocalDate (String term) {
-       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-       return LocalDate.parse(term, formatter);
+   
+    private String[] parsingString (String date) {
+        return date.split("\\.");
     }
-    public Map<String, Integer> map = new HashMap<>();
-    public boolean checkExpired (LocalDate today, LocalDate privacy, String key) {
-       int month =  map.get(key);
-       if (privacy.plusMonths(month).compareTo(today) <=0) return true;
-       return false;
+    private Map<String, Integer> map = new HashMap<>();
+    private List<Integer> answer = new ArrayList<>();
+    private static final int MONTH = 28;
+    private static final int YEAR = 12;
+    private int convertNum (String[] dayMonthYear){
+        int year = Integer.parseInt(dayMonthYear[0]);
+        int month = Integer.parseInt(dayMonthYear[1]);
+        int day = Integer.parseInt(dayMonthYear[2]);
+        return year * MONTH * YEAR + month * MONTH + day;
     }
-    public List<Integer> answer = new ArrayList<>();
     public int[] solution(String today, String[] terms, String[] privacies) {
         
         for (int i = 0 ; i< terms.length ; i++) {
@@ -34,8 +37,14 @@ class Solution {
         
         for (int i = 0 ; i< privacies.length ; i++) {
             String[] dateStr = privacies[i].split(" ");
-            if (checkExpired(getLocalDate(today), getLocalDate(dateStr[0]), dateStr[1])) answer.add(i+1);
+            String[] dayMonthYear = parsingString(dateStr[0]);
+            
+            int dayMonthYearNum = convertNum(dayMonthYear);
+            if (dayMonthYearNum + MONTH * map.get(dateStr[1]) <= convertNum(parsingString(today))) {
+                answer.add(i+1);
+            }
         }
+        
         int [] answers= new int [answer.size()];
         for (int i = 0 ; i< answer.size() ; i++) {
             answers[i] = answer.get(i);
