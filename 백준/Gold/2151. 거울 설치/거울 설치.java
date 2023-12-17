@@ -2,11 +2,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.StringTokenizer;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -35,13 +33,10 @@ public class Main {
             }
         }
         System.out.print(
-            Math.min(
-                extracted(n, door.get(0)[0], door.get(0)[1], door.get(1)[0], door.get(1)[1]),
-                extracted(n, door.get(1)[0], door.get(1)[1], door.get(0)[0], door.get(0)[1])
-            ));
+            extracted(n, door.get(0)[0], door.get(0)[1], door.get(1)[0], door.get(1)[1]));
     }
 
-    private static int extracted(int n, int startX, int startY , int endX, int endY) {
+    private static int extracted(int n, int startX, int startY, int endX, int endY) {
         boolean[][][] visit = new boolean[n][n][4];
         PriorityQueue<int[]> q = new PriorityQueue<>((a, b) -> (a[3] - b[3]));
 
@@ -56,36 +51,35 @@ public class Main {
             if (poll[0] == endX && poll[1] == endY) {
                 return poll[3];
             }
+
             int nextX = poll[0] + dx[poll[2]];
             int nextY = poll[1] + dy[poll[2]];
             if (nextX < 0 || nextX >= map.length || nextY < 0 || nextY >= map.length) {
                 continue;
             }
+
             if (map[nextX][nextY] == '*') {
                 continue;
             }
-            if (map[nextX][nextY] == '!' || map[nextX][nextY] == '.' || map[nextX][nextY] == '#') {
-                if (visit[nextX][nextY][poll[2]]) {
-                    continue;
-                }
-                visit[nextX][nextY][poll[2]] = true;
-                q.add(new int[]{nextX, nextY, poll[2], poll[3]});
+
+            if (visit[nextX][nextY][poll[2]]) {
+                continue;
             }
+            visit[nextX][nextY][poll[2]] = true;
+            q.add(new int[]{nextX, nextY, poll[2], poll[3]});
 
             if (map[nextX][nextY] == '!') {
                 for (int i = 0; i < 4; i++) {
-                    // 0 : 1,3 만됨
-                    // 1 : 0,2 만됨
-                    // 2 : 1,3 만됨
-                    // 3 : 0,2 만됨
-                    if ((i + poll[2]) % 2 == 0) {
+                    if (i % 2 == 0) {
                         continue;
                     }
-                    if (visit[nextX][nextY][i]) {
+                    int dir = (poll[2] + i) % 4;
+
+                    if (visit[nextX][nextY][dir]) {
                         continue;
                     }
-                    visit[nextX][nextY][i] = true;
-                    q.add(new int[]{nextX, nextY, i, poll[3] + 1});
+                    visit[nextX][nextY][dir] = true;
+                    q.add(new int[]{nextX, nextY, dir, poll[3] + 1});
                 }
             }
 
