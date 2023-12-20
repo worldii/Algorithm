@@ -32,8 +32,7 @@ public class Main {
                 }
             }
         }
-        System.out.print(
-            extracted(n, door.get(0)[0], door.get(0)[1], door.get(1)[0], door.get(1)[1]));
+        System.out.print(extracted(n, door.get(0)[0], door.get(0)[1], door.get(1)[0], door.get(1)[1]));
     }
 
     private static int extracted(int n, int startX, int startY, int endX, int endY) {
@@ -51,7 +50,6 @@ public class Main {
             if (poll[0] == endX && poll[1] == endY) {
                 return poll[3];
             }
-
             int nextX = poll[0] + dx[poll[2]];
             int nextY = poll[1] + dy[poll[2]];
             if (nextX < 0 || nextX >= map.length || nextY < 0 || nextY >= map.length) {
@@ -61,25 +59,24 @@ public class Main {
             if (map[nextX][nextY] == '*') {
                 continue;
             }
-
-            if (visit[nextX][nextY][poll[2]]) {
-                continue;
+            if (map[nextX][nextY] == '!' || map[nextX][nextY] == '.' || map[nextX][nextY] == '#') {
+                if (visit[nextX][nextY][poll[2]]) {
+                    continue;
+                }
+                visit[nextX][nextY][poll[2]] = true;
+                q.add(new int[]{nextX, nextY, poll[2], poll[3]});
             }
-            visit[nextX][nextY][poll[2]] = true;
-            q.add(new int[]{nextX, nextY, poll[2], poll[3]});
 
             if (map[nextX][nextY] == '!') {
                 for (int i = 0; i < 4; i++) {
-                    if (i % 2 == 0) {
+                    if (i== poll[2]) continue;
+                    if ((i + poll[2]) % 2 == 0) {
                         continue;
                     }
-                    int dir = (poll[2] + i) % 4;
-
-                    if (visit[nextX][nextY][dir]) {
+                    if (visit[nextX][nextY][i]) {
                         continue;
                     }
-                    visit[nextX][nextY][dir] = true;
-                    q.add(new int[]{nextX, nextY, dir, poll[3] + 1});
+                    q.add(new int[]{nextX, nextY, i, poll[3] + 1});
                 }
             }
 
